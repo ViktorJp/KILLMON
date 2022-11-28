@@ -1,5 +1,5 @@
 # KILLMON
-KILLMON v0.4 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
+KILLMON v0.5 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
 
 KILLMON is a shell script that provides additional capabilities outside of the VPN kill switch functionality that is currently integrated into the Asus-Merlin Firmware. KILLMON builds on the excellent kill switch script originally provided by @Eibgrad, and provides a user interface to help monitor, enable, or disable kill switch operations, as well as allowing you to choose how to implement the kill switch for both IP4 and IP6 traffic. Currently, KILLMON provides traffic kill modes for 3 different scenarios...
 
