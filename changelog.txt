@@ -1,0 +1,6 @@
+v1.0 - (November 29, 2022)
+       * MAJOR: KILLMON v1.0 goes live today!
+       * CHANGED: Most recent major mod was removing all IPv6 related info in the UI if IP6 is turned off at the router
+         level, and will only display IP4-related settings.
+       * FIXED: Minor code changes and enhancements to bring it up to the same back-end functional level as VPNMON-R2,
+         RTRMON and PWRMON.
