@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# KILLMON v1.0 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
+# KILLMON v1.1 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
 #
 # KILLMON is a shell script that provides additional capabilities outside of the VPN kill switch functionality that is
 # currently integrated into the Asus-Merlin Firmware. KILLMON builds on the excellent kill switch script originally
@@ -42,7 +42,7 @@
 # -------------------------------------------------------------------------------------------------------------------------
 # System Variables (Do not change beyond this point or this may change the programs ability to function correctly)
 # -------------------------------------------------------------------------------------------------------------------------
-Version="1.0"
+Version="1.1"
 Beta=0
 APPPATH="/jffs/scripts/killmon.sh"
 CFGPATH="/jffs/addons/killmon.d/killmon.cfg"
@@ -287,7 +287,7 @@ iprangemode6 () {
   if [ $ip6rangenotation -eq 0 ]; then
     if [ $WANIFUSED -eq 0 ]; then
       ip6tables -I FORWARD -i br+ -o $WAN0IFNAME -j $FW6_CHAIN
-      ip6tables -A $FW6_CHAIN -s $iprangecidr -o $WAN0IFNAME -j REJECT
+      ip6tables -A $FW6_CHAIN -s $ip6rangecidr -o $WAN0IFNAME -j REJECT
     elif [ $WANIFUSED -eq 1 ]; then
       ip6tables -I FORWARD -i br+ -o $WAN1IFNAME -j $FW6_CHAIN
       ip6tables -A $FW6_CHAIN -s $ip6rangecidr -o $WAN1IFNAME -j REJECT
