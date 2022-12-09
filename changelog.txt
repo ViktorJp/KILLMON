@@ -1,4 +1,4 @@
-v1.1 - (TBA)
+v1.1 - (December 9, 2022)
        * FIXED: Found a minor typo in the ip6rules table logic
 
 v1.0 - (November 29, 2022)
