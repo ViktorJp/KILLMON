@@ -1,5 +1,5 @@
 v1.01  - (December 9, 2022)
-         * FIXED: Found a minor typo in the ip6rules table logic
+         * FIXED: Found a minor typo in the ip6tables logic
 
 v1.0   - (November 29, 2022)
          * MAJOR: KILLMON v1.0 goes live today!
