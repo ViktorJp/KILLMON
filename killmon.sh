@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# KILLMON v1.01 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
+# KILLMON v1.04 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
 #
 # KILLMON is a shell script that provides additional capabilities outside of the VPN kill switch functionality that is
 # currently integrated into the Asus-Merlin Firmware. KILLMON builds on the excellent kill switch script originally
@@ -42,7 +42,7 @@
 # -------------------------------------------------------------------------------------------------------------------------
 # System Variables (Do not change beyond this point or this may change the programs ability to function correctly)
 # -------------------------------------------------------------------------------------------------------------------------
-Version="1.01"
+Version="1.04"
 Beta=0
 APPPATH="/jffs/scripts/killmon.sh"
 CFGPATH="/jffs/addons/killmon.d/killmon.cfg"
@@ -55,6 +55,7 @@ killswitch6status="DISABLED" # ENABLED OR DISABLED
 killswitchautostart="DISABLED" # ENABLED OR DISABLED
 killswitchmode="INACTIVE" # PARANOID, IP RANGE, SINGLEIP, OR INACTIVE
 killswitch6mode="INACTIVE" # PARANOID, IP RANGE, SINGLEIP, OR INACTIVE
+suppressVPNMONR2="DISABLED" # ENABLED OR DISABLED
 iprangenotation=1 # 0=CIDR, 1=Range
 ip6rangenotation=1 # 0=CIDR, 1=Range
 iprangecidr="192.168.1.0/24"
@@ -68,6 +69,7 @@ ip6single="fe80::92ca:faff:fe22:97bf"
 WANIFUSED=0 # 0=WAN0, 1=WAN1, OR 2=WAN0/1
 WAN0IFNAME="eth0"
 WAN1IFNAME="None"
+hideoptions=1
 
 # Color variables
 CBlack="\e[1;30m"
@@ -695,6 +697,7 @@ saveconfig () {
     echo 'killswitchmode="'"$killswitchmode"'"' # PARANOID, IP RANGE, SINGLE IP OR INACTIVE
     echo 'killswitch6status="'"$killswitch6status"'"' # ENABLED OR DISABLED
     echo 'killswitch6mode="'"$killswitch6mode"'"' # PARANOID, IP RANGE, SINGLE IP, OR INACTIVE
+    echo 'suppressVPNMONR2="'"$suppressVPNMONR2"'"' # ENABLED OR DISABLED
     echo 'iprangenotation='$iprangenotation
     echo 'ip6rangenotation='$ip6rangenotation
     echo 'iprangecidr="'"$iprangecidr"'"' # Local IPv4 Subnet in CIDR
@@ -992,6 +995,14 @@ while true; do
       printf "${InvGreen}${CWhite}ENABLED  ${CClear} |"; printf "%s\n"
     fi
 
+    if [ "$suppressVPNMONR2" == "ENABLED" ]; then
+      echo -en " ${InvGreen}    ${CClear}${CWhite}  VPNMON-R2 UI/Log   ${CClear}: "
+      printf "${InvGreen}${CWhite}ENABLED  ${CClear} |"; printf "%s\n"
+    else
+      echo -en " ${InvRed}    ${CClear}${CWhite}  VPNMON-R2 UI/Log   ${CClear}: "
+      printf "${InvRed}${CWhite}DISABLED ${CClear} |"; printf "%s\n"
+    fi
+
   echo -e " ${CWhite}                     ${CClear}${CCyan}"
 
   if [ $ipv6service -eq 0 ]; then
@@ -1045,74 +1056,87 @@ while true; do
 
   echo -e "${CClear}"
   echo -e " ${CGreen}------------------------------------------------------------------------"
-  echo -e " ${CGreen}Operations"
+  echo -e " ${CGreen}Options ${CYellow}(sh)${CGreen}ow/${CYellow}(hi)${CGreen}de"
   echo -e " ${CGreen}------------------------------------------------------------------------"
 
-  if [ $ipv6service -eq 0 ]; then
-    echo -e " ${InvDkGray}${CWhite} pm ${CClear}${CCyan}: Enable IP4 ${CGreen}Paranoid Mode${CClear}"
-    echo -e " ${InvDkGray}${CWhite} rm ${CClear}${CCyan}: Enable IP4 ${CGreen}Range Mode${CClear}"
-    echo -e " ${InvDkGray}${CWhite} sm ${CClear}${CCyan}: Enable IP4 ${CGreen}Single IP Mode${CClear}"
-  else
-    echo -e " ${InvDkGray}${CWhite} pm ${CClear}${CCyan}: Enable IP4 ${CGreen}Paranoid Mode${CClear}       | ${InvDkGray}${CWhite} p6 ${CClear}${CCyan}: Enable IP6 ${CGreen}Paranoid Mode"
-    echo -e " ${InvDkGray}${CWhite} rm ${CClear}${CCyan}: Enable IP4 ${CGreen}Range Mode${CClear}          | ${InvDkGray}${CWhite} r6 ${CClear}${CCyan}: Enable IP6 ${CGreen}Range Mode"
-    echo -e " ${InvDkGray}${CWhite} sm ${CClear}${CCyan}: Enable IP4 ${CGreen}Single IP Mode${CClear}      | ${InvDkGray}${CWhite} s6 ${CClear}${CCyan}: Enable IP6 ${CGreen}Single IP Mode"
-  fi
+  if [ $hideoptions -eq 0 ]; then
 
-  echo -e " ${InvDkGray}${CWhite}  | ${CClear}${CCyan}"
-  echo -e " ${InvDkGray}${CWhite} rr ${CClear}${CCyan}: Disable and Reverse ALL Kill Switch Rules from iptables"
-  echo -e " ${InvDkGray}${CWhite}  | ${CClear}${CCyan}"
-  echo -en " ${InvDkGray}${CWhite} r1 ${CClear}${CCyan}: Define IP4 Range ${CGreen}- "
-
-    if [ $iprangenotation -eq 0 ]; then
-      printf $iprangecidr; printf "%s\n"
-    elif [ $iprangenotation -eq 1 ]; then
-      printf $iprangefrom"-"$iprangeto; printf "%s\n"
+    if [ $ipv6service -eq 0 ]; then
+      echo -e " ${InvDkGray}${CWhite} pm ${CClear}${CCyan}: Enable IP4 ${CGreen}Paranoid Mode${CClear}"
+      echo -e " ${InvDkGray}${CWhite} rm ${CClear}${CCyan}: Enable IP4 ${CGreen}Range Mode${CClear}"
+      echo -e " ${InvDkGray}${CWhite} sm ${CClear}${CCyan}: Enable IP4 ${CGreen}Single IP Mode${CClear}"
+    else
+      echo -e " ${InvDkGray}${CWhite} pm ${CClear}${CCyan}: Enable IP4 ${CGreen}Paranoid Mode${CClear}       | ${InvDkGray}${CWhite} p6 ${CClear}${CCyan}: Enable IP6 ${CGreen}Paranoid Mode"
+      echo -e " ${InvDkGray}${CWhite} rm ${CClear}${CCyan}: Enable IP4 ${CGreen}Range Mode${CClear}          | ${InvDkGray}${CWhite} r6 ${CClear}${CCyan}: Enable IP6 ${CGreen}Range Mode"
+      echo -e " ${InvDkGray}${CWhite} sm ${CClear}${CCyan}: Enable IP4 ${CGreen}Single IP Mode${CClear}      | ${InvDkGray}${CWhite} s6 ${CClear}${CCyan}: Enable IP6 ${CGreen}Single IP Mode"
     fi
 
-  if [ $ipv6service -ne 0 ]; then
-    echo -en " ${InvDkGray}${CWhite} r2 ${CClear}${CCyan}: Define IP6 Range ${CGreen}- "
+    echo -e " ${InvDkGray}${CWhite}  | ${CClear}${CCyan}"
+    echo -e " ${InvDkGray}${CWhite} rr ${CClear}${CCyan}: Disable and Reverse ALL Kill Switch Rules from iptables"
+    echo -e " ${InvDkGray}${CWhite}  | ${CClear}${CCyan}"
+    echo -en " ${InvDkGray}${CWhite} r1 ${CClear}${CCyan}: Define IP4 Range ${CGreen}- "
 
-      if [ $ip6rangenotation -eq 0 ]; then
-        printf "%.44s>\n" $ip6rangecidr
-      elif [ $ip6rangenotation -eq 1 ]; then
-        printf "%.44s>\n" $ip6rangefrom"-"$ip6rangeto
+      if [ $iprangenotation -eq 0 ]; then
+        printf $iprangecidr; printf "%s\n"
+      elif [ $iprangenotation -eq 1 ]; then
+        printf $iprangefrom"-"$iprangeto; printf "%s\n"
       fi
-  fi
 
-  echo -en " ${InvDkGray}${CWhite} s1 ${CClear}${CCyan}: Define Single IP4 ${CGreen}- "
+    if [ $ipv6service -ne 0 ]; then
+      echo -en " ${InvDkGray}${CWhite} r2 ${CClear}${CCyan}: Define IP6 Range ${CGreen}- "
 
-    if [ ! -z "$ipsingle" ]; then
-      printf $ipsingle; printf "%s\n"
+        if [ $ip6rangenotation -eq 0 ]; then
+          printf "%.44s>\n" $ip6rangecidr
+        elif [ $ip6rangenotation -eq 1 ]; then
+          printf "%.44s>\n" $ip6rangefrom"-"$ip6rangeto
+        fi
     fi
 
-  if [ $ipv6service -ne 0 ]; then
-    echo -en " ${InvDkGray}${CWhite} s2 ${CClear}${CCyan}: Define Single IP6 ${CGreen}- "
+    echo -en " ${InvDkGray}${CWhite} s1 ${CClear}${CCyan}: Define Single IP4 ${CGreen}- "
 
-      if [ ! -z "$ip6single" ]; then
-        printf $ip6single; printf "%s\n"
+      if [ ! -z "$ipsingle" ]; then
+        printf $ipsingle; printf "%s\n"
       fi
-  fi
 
-  echo -en " ${InvDkGray}${CWhite} w1 ${CClear}${CCyan}: Define affected WAN Interface(s) ${CGreen}- "
+    if [ $ipv6service -ne 0 ]; then
+      echo -en " ${InvDkGray}${CWhite} s2 ${CClear}${CCyan}: Define Single IP6 ${CGreen}- "
 
-    if [ $WANIFUSED -eq 0 ]; then
-      printf "WAN0 ($WAN0IFNAME)"; printf "%s\n"
-    elif [ $WANIFUSED -eq 1 ]; then
-      printf "WAN1 ($WAN1IFNAME)"; printf "%s\n"
-    elif [ $WANIFUSED -eq 2 ]; then
-      printf "WAN0/1 ($WAN0IFNAME/$WAN1IFNAME)"; printf "%s\n"
+        if [ ! -z "$ip6single" ]; then
+          printf $ip6single; printf "%s\n"
+        fi
     fi
 
-  echo -e " ${InvDkGray}${CWhite}  | ${CClear}${CCyan}"
-  echo -e " ${InvDkGray}${CWhite} ek ${CClear}${CCyan}: Enable Kill Switch Rules on Router/Firewall Restart"
-  echo -e " ${InvDkGray}${CWhite} dk ${CClear}${CCyan}: Disable Kill Switch Rules on Router/Firewall Restart"
-  echo -e " ${CGreen}------------------------------------------------------------------------"
+    echo -en " ${InvDkGray}${CWhite} w1 ${CClear}${CCyan}: Define affected WAN Interface(s) ${CGreen}- "
+
+      if [ $WANIFUSED -eq 0 ]; then
+        printf "WAN0 ($WAN0IFNAME)"; printf "%s\n"
+      elif [ $WANIFUSED -eq 1 ]; then
+        printf "WAN1 ($WAN1IFNAME)"; printf "%s\n"
+      elif [ $WANIFUSED -eq 2 ]; then
+        printf "WAN0/1 ($WAN0IFNAME/$WAN1IFNAME)"; printf "%s\n"
+      fi
+
+    echo -e " ${InvDkGray}${CWhite}  | ${CClear}${CCyan}"
+    echo -e " ${InvDkGray}${CWhite} re ${CClear}${CCyan}: Enable/Disable Kill Switch Rules on Router/Firewall Restart"
+    echo -e " ${InvDkGray}${CWhite}  | ${CClear}${CCyan}"
+    echo -e " ${InvDkGray}${CWhite} vm ${CClear}${CCyan}: Enable/Disable VPNMON-R2 killswitch UI and Logging"
+    echo -e " ${CGreen}------------------------------------------------------------------------"
+  fi
+
   echo ""
   printf " Selection: "
   read -r Selection
 
   # Execute chosen selections
       case "$Selection" in
+
+        sh) #Show Options
+          hideoptions=0
+        ;;
+
+        hi) #Hide Options
+          hideoptions=1
+        ;;
 
         pm) # Paranoid Mode - all LAN traffic is forbidden to make it out to WAN
           reverserules
@@ -1274,28 +1298,39 @@ while true; do
           saveconfig
         ;;
 
-        ek) # Huge thanks to @Jack Yaz for lifting some of this code from Yazfi
-          if [ -f /jffs/scripts/firewall-start ]; then
+        re)
+          if [ "$killswitchautostart" == "ENABLED" ]; then
 
-            if ! grep -F "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" /jffs/scripts/firewall-start; then
-          		echo "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" >> /jffs/scripts/firewall-start
-              killswitchautostart="ENABLED"
+            if [ -f /jffs/scripts/firewall-start ]; then
+              sed -i -e '/killmon.sh/d' /jffs/scripts/firewall-start
+              killswitchautostart="DISABLED"
             fi
 
           else
-            echo "#!/bin/sh" > /jffs/scripts/firewall-start
-            echo "" >> /jffs/scripts/firewall-start
-            echo "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" >> /jffs/scripts/firewall-start
-            chmod 0755 /jffs/scripts/firewall-start
-            killswitchautostart="ENABLED"
+
+            if [ -f /jffs/scripts/firewall-start ]; then
+
+              if ! grep -F "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" /jffs/scripts/firewall-start; then
+                echo "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" >> /jffs/scripts/firewall-start
+                killswitchautostart="ENABLED"
+              fi
+
+            else
+              echo "#!/bin/sh" > /jffs/scripts/firewall-start
+              echo "" >> /jffs/scripts/firewall-start
+              echo "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" >> /jffs/scripts/firewall-start
+              chmod 0755 /jffs/scripts/firewall-start
+              killswitchautostart="ENABLED"
+            fi
           fi
           saveconfig
         ;;
 
-        dk)
-          if [ -f /jffs/scripts/firewall-start ]; then
-            sed -i -e '/killmon.sh/d' /jffs/scripts/firewall-start
-            killswitchautostart="DISABLED"
+        vm)
+          if [ $suppressVPNMONR2 == "ENABLED" ]; then
+            suppressVPNMONR2="DISABLED"
+          else
+            suppressVPNMONR2="ENABLED"
           fi
           saveconfig
         ;;
