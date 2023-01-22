@@ -1,8 +1,9 @@
-v1.02  - (TBA)
+v1.03  - (TBA)
          * ADDED: Some logic was added under the Operations section to determine whether or not to suppress the KILLMON
          header on the main VPNMON-R2 UI along with the associated logging that happens. If you have KILLMON installed
          but not running or enabled, VPNMON-R2 would display warnings that KILLMON is disabled and that rule integrity is
          compromised.  You can now suppress or enable this info in VPNMON-R2 from within the KILLMON UI v1.02.
+         * FIXED: Other minor optimizations and code cleanup to help simplify the UI
 
 v1.01  - (December 9, 2022)
          * FIXED: Found a minor typo in the ip6tables logic. If you currently have IP6 rules enabled, please disable and
