@@ -1056,7 +1056,7 @@ while true; do
 
   echo -e "${CClear}"
   echo -e " ${CGreen}------------------------------------------------------------------------"
-  echo -e " ${CGreen}Options ${CYellow}(S)${CGreen}how/${CYellow}(H)${CGreen}ide"
+  echo -e " ${CGreen}Options ${CYellow}(sh)${CGreen}ow/${CYellow}(hi)${CGreen}de"
   echo -e " ${CGreen}------------------------------------------------------------------------"
 
   if [ $hideoptions -eq 0 ]; then
@@ -1130,11 +1130,11 @@ while true; do
   # Execute chosen selections
       case "$Selection" in
 
-        [Ss]) #Show Options
+        sh) #Show Options
           hideoptions=0
         ;;
 
-        [Hh]) #Hide Options
+        hi) #Hide Options
           hideoptions=1
         ;;
 
