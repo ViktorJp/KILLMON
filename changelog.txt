@@ -1,8 +1,9 @@
-v1.03  - (TBA)
+v1.04  - (January 22, 2023)
          * ADDED: Some logic was added under the Operations section to determine whether or not to suppress the KILLMON
-         header on the main VPNMON-R2 UI along with the associated logging that happens. If you have KILLMON installed
-         but not running or enabled, VPNMON-R2 would display warnings that KILLMON is disabled and that rule integrity is
-         compromised.  You can now suppress or enable this info in VPNMON-R2 from within the KILLMON UI v1.02.
+           header on the main VPNMON-R2 UI along with the associated logging that happens. If you have KILLMON installed
+           but not running or enabled, VPNMON-R2 would display warnings that KILLMON is disabled and that rule integrity is
+           compromised.  You can now suppress or enable this info in VPNMON-R2 from within the KILLMON UI v1.04.
+         * ADDED: The ability to show/hide the options to help declutter the UI a bit more. 
          * FIXED: Other minor optimizations and code cleanup to help simplify the UI
 
 v1.01  - (December 9, 2022)
