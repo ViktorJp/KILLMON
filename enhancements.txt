@@ -1,0 +1,10 @@
+Planned Enhancements
+--------------------
+
+* Allow for multiple ranges/ips
+
+
+Done & Implemented
+------------------
+
+* Suppress UI & Logging in VPNMON-R2 if killmon is active or not.
