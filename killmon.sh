@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# KILLMON v1.04 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
+# KILLMON v1.05 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
 #
 # KILLMON is a shell script that provides additional capabilities outside of the VPN kill switch functionality that is
 # currently integrated into the Asus-Merlin Firmware. KILLMON builds on the excellent kill switch script originally
@@ -42,7 +42,7 @@
 # -------------------------------------------------------------------------------------------------------------------------
 # System Variables (Do not change beyond this point or this may change the programs ability to function correctly)
 # -------------------------------------------------------------------------------------------------------------------------
-Version="1.04"
+Version="1.05"
 Beta=0
 APPPATH="/jffs/scripts/killmon.sh"
 CFGPATH="/jffs/addons/killmon.d/killmon.cfg"
@@ -230,6 +230,17 @@ paranoidmode () {
     iptables -A $FW_CHAIN -i br+ -o $WAN0IFNAME -j REJECT
     iptables -A $FW_CHAIN -i br+ -o $WAN1IFNAME -j REJECT
   fi
+
+#  iptables -t raw -I PREROUTING -i "$iface" -m set ! --match-set Skynet-MasterWL src -m set --match-set Skynet-Master src -j DROP 2>/dev/null
+#  iptables -t raw -I PREROUTING -i br+ -m set ! --match-set Skynet-MasterWL dst -m set --match-set Skynet-Master dst -j DROP 2>/dev/null
+#  iptables -t raw -I OUTPUT -m set ! --match-set Skynet-MasterWL dst -m set --match-set Skynet-Master dst -j DROP 2>/dev/null
+
+#  iptables -t raw -D PREROUTING -i "$iface" -m set ! --match-set Skynet-MasterWL src -m set --match-set Skynet-Master src -j DROP 2>/dev/null
+#	 iptables -t raw -D PREROUTING -i br+ -m set ! --match-set Skynet-MasterWL dst -m set --match-set Skynet-Master dst -j DROP 2>/dev/null
+#	 iptables -t raw -D OUTPUT -m set ! --match-set Skynet-MasterWL dst -m set --match-set Skynet-Master dst -j DROP 2>/dev/null
+
+# iptables -t raw -I PREROUTING -p tcp -d 8.8.8.8 --dport 53 -j DROP
+# iptables -t raw -I PREROUTING -p udp -d 8.8.8.8 --dport 53 -j DROP
 
 }
 
@@ -667,6 +678,9 @@ vuninstall () {
         clear
         reverserules
         reverserules6
+        if [ -f /jffs/scripts/firewall-start ]; then
+          sed -i -e '/killmon.sh/d' /jffs/scripts/firewall-start
+        fi
         rm -r /jffs/addons/killmon.d
         rm /jffs/scripts/killmon.sh
         echo ""
@@ -1310,9 +1324,12 @@ while true; do
 
             if [ -f /jffs/scripts/firewall-start ]; then
 
-              if ! grep -F "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" /jffs/scripts/firewall-start; then
+              if ! grep -q -F "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" /jffs/scripts/firewall-start; then
                 echo "sh /jffs/scripts/killmon.sh -protect & # KillSwitch Monitor" >> /jffs/scripts/firewall-start
                 killswitchautostart="ENABLED"
+              else
+                sed -i -e '/killmon.sh/d' /jffs/scripts/firewall-start
+                killswitchautostart="DISABLED"
               fi
 
             else
