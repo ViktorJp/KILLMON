@@ -1,9 +1,11 @@
-v1.05  - (February 20, 2023)
+v1.1.1   - 
+
+v1.05    - (February 20, 2023)
          * FIXED: Fixed some of the logic when it came to killmon being out of sync with the contents of the firewall-start
            file and its accompanying killmon.cfg settings.  Thanks to @DAVID LONG for bringing this to my attention. Also
            fixed the uninstall routine to make sure the firewall-start file has been cleared of its killmon entry.
 
-v1.04  - (January 22, 2023)
+v1.04    - (January 22, 2023)
          * ADDED: Some logic was added under the Operations section to determine whether or not to suppress the KILLMON
            header on the main VPNMON-R2 UI along with the associated logging that happens. If you have KILLMON installed
            but not running or enabled, VPNMON-R2 would display warnings that KILLMON is disabled and that rule integrity is
@@ -11,11 +13,11 @@ v1.04  - (January 22, 2023)
          * ADDED: The ability to show/hide the options to help declutter the UI a bit more. 
          * FIXED: Other minor optimizations and code cleanup to help simplify the UI
 
-v1.01  - (December 9, 2022)
+v1.01    - (December 9, 2022)
          * FIXED: Found a minor typo in the ip6tables logic. If you currently have IP6 rules enabled, please disable and
            re-enable to reset them.
 
-v1.0   - (November 29, 2022)
+v1.0     - (November 29, 2022)
          * MAJOR: KILLMON v1.0 goes live today!
          * CHANGED: Most recent major mod was removing all IPv6 related info in the UI if IP6 is turned off at the router
            level, and will only display IP4-related settings.
