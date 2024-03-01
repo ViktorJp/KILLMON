@@ -1,4 +1,4 @@
-v1.1.2   - (TBA)
+v1.1.2   - (February 29, 2024)
          - MINOR: Removed integration with VPNMON-R2, and all references to it in the code. As VPNMON-R2 has been sunset,
            there are currently no plans of integrating any KILLMON indicators into VPNMON-R3. May look at building some
            killswitch functionality into R3 in the future.
