@@ -1,10 +1,9 @@
 Planned Enhancements
 --------------------
-
 * Allow for multiple ranges/ips
-
+* Use a loop to determine if rules are in place
+* Consider possible VPNMON-R3 integration (also loop to determine if rules are in place)
 
 Done & Implemented
 ------------------
-
 * Suppress UI & Logging in VPNMON-R2 if killmon is active or not.
