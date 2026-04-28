@@ -20,6 +20,8 @@
 # when your VPN connection goes down. Please note that if IPv6 is enabled on your router and are using a kill switch of any
 # kind that does not specifically block IP6, any and all traffic that utilizes IPv6 addressing will be leaking traffic
 # around your IP4 VPN tunnel over your WAN when it goes down.
+#
+# Last Updated: 2026-Apr-28
 
 #Preferred standard router binaries path
 export PATH="/sbin:/bin:/usr/sbin:/usr/bin:$PATH"
