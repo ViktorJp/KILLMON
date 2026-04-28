@@ -1,5 +1,7 @@
-# KILLMON v1.1.2
-KILLMON - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022-2024
+# KILLMON v1.1.3
+KILLMON - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022-2026
+
+Last Updated: 2026-Apr-28
 
 ![image](https://github.com/ViktorJp/KILLMON/assets/97465574/6aee8e7a-c4d1-4444-b2da-853c838a0ecd)
 

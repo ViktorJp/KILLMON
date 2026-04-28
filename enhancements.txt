@@ -1,10 +1,11 @@
 Planned Enhancements
 --------------------
-
-* Allow for multiple ranges/ips
-
+* Allow for multiple ranges/single IPs
+* Use a short loop to determine if rules are in place, if not, re-apply rules to minimize exposure
+* Update UI per the new standards
+* AMTM Email integration/notifications when killswitch activates/deactivates?
 
 Done & Implemented
 ------------------
-
 * Suppress UI & Logging in VPNMON-R2 if killmon is active or not.
+* NIXED - Consider possible VPNMON-R3 integration (also loop to determine if rules are in place)

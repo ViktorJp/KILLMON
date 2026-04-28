@@ -1,3 +1,13 @@
+v1.1.3   - (April 28, 2026)
+         - PATCH: Diving into why the new version of SCREEN (v5.0.1) didn't want to start from a script in the post-mount,
+           found that some SCREEN environment variables weren't being set. Thanks to some input from @Martinski, these
+           variables can be included in the script, instead of adding these to the top of the post-mount.
+         - PATCH: Added "unset LD_LIBRARY_PATH" statement due to the latest Entware binaries using the RUNPATH embedded
+           library search path mechanism instead of the previous RPATH method. RUNPATH is searched *AFTER* the
+           LD_LIBRARY_PATH definitions, whereas RPATH has higher priority than the LD_LIBRARY_PATH environment variable,
+           so it's searched FIRST. Thanks to @Martinski for his advice.
+         - PATCH: Made VPNMON-R3 compliant with the amtmupdate functionality to allow for autoupdates through AMTM.
+
 v1.1.2   - (February 29, 2024)
          - MINOR: Removed integration with VPNMON-R2, and all references to it in the code. As VPNMON-R2 has been sunset,
            there are currently no plans of integrating any KILLMON indicators into VPNMON-R3. May look at building some

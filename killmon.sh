@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# KILLMON v1.1.2 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
+# KILLMON v1.1.3 - Asus-Merlin IP4/IP6 Kill Switch Monitor & Configurator by Viktor Jaep, 2022
 #
 # KILLMON is a shell script that provides additional capabilities outside of the VPN kill switch functionality that is
 # currently integrated into the Asus-Merlin Firmware. KILLMON builds on the excellent kill switch script originally
@@ -20,14 +20,23 @@
 # when your VPN connection goes down. Please note that if IPv6 is enabled on your router and are using a kill switch of any
 # kind that does not specifically block IP6, any and all traffic that utilizes IPv6 addressing will be leaking traffic
 # around your IP4 VPN tunnel over your WAN when it goes down.
+#
+# Last Updated: 2026-Apr-28
 
 #Preferred standard router binaries path
 export PATH="/sbin:/bin:/usr/sbin:/usr/bin:$PATH"
+unset LD_LIBRARY_PATH
+
+##-------------------------------------##
+## Added by Martinski W. [2026-Apr-13] ##
+##-------------------------------------##
+[ "$HOME" != "/root" ] && export HOME="/root"
+export SCREENDIR="${HOME}/.screen"
 
 # -------------------------------------------------------------------------------------------------------------------------
 # System Variables (Do not change beyond this point or this may change the programs ability to function correctly)
 # -------------------------------------------------------------------------------------------------------------------------
-Version="1.1.2"
+Version="1.1.3"
 Beta=0
 APPPATH="/jffs/scripts/killmon.sh"
 CFGPATH="/jffs/addons/killmon.d/killmon.cfg"
@@ -55,6 +64,9 @@ WAN0IFNAME="eth0"
 WAN1IFNAME="None"
 hideoptions=1
 
+# To support automatic script updates from AMTM #
+doScriptUpdateFromAMTM=true
+
 # Color variables
 CBlack="\e[1;30m"
 InvBlack="\e[1;40m"
@@ -80,7 +92,7 @@ CClear="\e[0m"
 # Functions
 # -------------------------------------------------------------------------------------------------------------------------
 
-# LogoNM is a function that displays the RTRMON script name in a cool ASCII font without menu options
+# LogoNM is a function that displays the KILLMON script name in a cool ASCII font without menu options
 logoNM () {
 echo -e "${CYellow}     __ __ ______    __    __  _______  _   __"
 echo -e "    / //_//  _/ /   / /   /  |/  / __ \/ | / /  ${CGreen}v$Version${CYellow}"
@@ -89,7 +101,7 @@ echo -e "  / /| |_/ // /___/ /___/ /  / / /_/ / /|  /"
 echo -e " /_/ |_/___/_____/_____/_/  /_/\____/_/ |_/${CClear}"
 }
 
-# LogoNM is a function that displays the RTRMON script name in a cool ASCII font without menu options
+# LogoNM is a function that displays the KILLMON script name in a cool ASCII font without menu options
 logo () {
 echo -e "${CYellow}     __ __ ______    __    __  _______  _   __"
 echo -e "    / //_//  _/ /   / /   /  |/  / __ \/ | / /  ${CGreen}v$Version${CYellow}"
@@ -110,6 +122,34 @@ promptyn () {   # No defaults, just y or n
         * ) echo -e "\nPlease answer y or n.";;
       esac
   done
+}
+
+##-------------------------------------------##
+## Borrwed from ExtremeFiretop [2026-Apr-11] ##
+##-------------------------------------------##
+ScriptUpdateFromAMTM()
+{
+    if ! "$doScriptUpdateFromAMTM"
+    then
+        printf "Automatic script updates via AMTM are currently disabled.\n\n"
+        return 1
+    fi
+
+    if [ $# -gt 0 ] && [ "$1" = "check" ]
+    then return 0
+    fi
+
+    # Force a BACKUPMON download and update
+    echo -e "${CClear}[i] Force Downloading KILLMON... Please stand by..."
+    curl --silent --fail --retry 3 "https://raw.githubusercontent.com/ViktorJp/KILLMON/main/killmon.sh" -o "/jffs/scripts/killmon.sh" && chmod 755 "/jffs/scripts/killmon.sh"
+    DLsuccess=$?
+    if [ "$DLsuccess" -eq 0 ]; then
+      echo -e "${CClear}[i] KILLMON Download/Update Success."
+    else
+      echo -e "${CClear}[X] KILLMON Download/Update Failed."
+    fi
+
+    return "$DLsuccess"
 }
 
 # -------------------------------------------------------------------------------------------------------------------------
@@ -375,7 +415,7 @@ reverserules6 () {
 
 # -------------------------------------------------------------------------------------------------------------------------
 
-# vsetup is a function that sets up, confiures and allows you to launch RTRMON on your router...
+# vsetup is a function that sets up, confiures and allows you to launch KILLMON on your router...
 vsetup () {
 
   while true; do
@@ -579,7 +619,7 @@ vupdate () {
       if promptyn "(y/n): "; then
         echo ""
         echo -e "${CCyan}Downloading KILLMON ${CYellow}v$DLVersion${CClear}"
-        curl --silent --retry 3 "https://raw.githubusercontent.com/ViktorJp/RTRMON/master/killmon.sh" -o "/jffs/scripts/killmon.sh" && chmod a+rx "/jffs/scripts/killmon.sh"
+        curl --silent --retry 3 "https://raw.githubusercontent.com/ViktorJp/KILLMON/master/killmon.sh" -o "/jffs/scripts/killmon.sh" && chmod a+rx "/jffs/scripts/killmon.sh"
         echo ""
         echo -e "${CCyan}Download successful!${CClear}"
         echo -e "$(date) - KILLMON - Successfully downloaded KILLMON v$DLVersion" >> $LOGFILE
@@ -617,7 +657,7 @@ vupdate () {
 
 # -------------------------------------------------------------------------------------------------------------------------
 
-# vlogs is a function that calls the nano text editor to view the RTRMON log file
+# vlogs is a function that calls the nano text editor to view the KILLMON log file
 vlogs() {
 
 export TERM=linux
@@ -627,7 +667,7 @@ nano +999999 --linenumbers $LOGFILE
 
 # -------------------------------------------------------------------------------------------------------------------------
 
-# vuninstall is a function that uninstalls and removes all traces of RTRMON from your router...
+# vuninstall is a function that uninstalls and removes all traces of KILLMON from your router...
 vuninstall () {
   clear
   logoNM
@@ -705,9 +745,17 @@ saveconfig () {
 #DEBUG=; set -x # uncomment/comment to enable/disable debug mode
 #{              # uncomment/comment to enable/disable debug mode
 
-# Create the necessary folder/file structure for RTRMON under /jffs/addons
+# Create the necessary folder/file structure for KILLMON under /jffs/addons
 if [ ! -d "/jffs/addons/killmon.d" ]; then
   mkdir -p "/jffs/addons/killmon.d"
+fi
+
+# Check for an AMTM Auto Update
+if [ "$1" = "amtmupdate" ]
+then
+    shift
+    ScriptUpdateFromAMTM "$@"
+    exit "$?"
 fi
 
 # Check and see if any commandline option is being used
@@ -871,7 +919,7 @@ fi
 # Check to see if the monitor option is being called
 if [ "$1" == "-monitor" ]
   then
-    # Check for and add an alias for RTRMON
+    # Check for and add an alias for KILLMON
     if ! grep -F "sh /jffs/scripts/killmon.sh" /jffs/configs/profile.add >/dev/null 2>/dev/null; then
   		echo "alias killmon=\"sh /jffs/scripts/killmon.sh\" # KILLMON" >> /jffs/configs/profile.add
     fi
