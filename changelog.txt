@@ -6,7 +6,7 @@ v1.1.3   - (April 28, 2026)
            library search path mechanism instead of the previous RPATH method. RUNPATH is searched *AFTER* the
            LD_LIBRARY_PATH definitions, whereas RPATH has higher priority than the LD_LIBRARY_PATH environment variable,
            so it's searched FIRST. Thanks to @Martinski for his advice.
-         - PATCH: Made VPNMON-R3 compliant with the amtmupdate functionality to allow for autoupdates through AMTM.
+         - PATCH: Made KILLMON compliant with the amtmupdate functionality to allow for autoupdates through AMTM.
 
 v1.1.2   - (February 29, 2024)
          - MINOR: Removed integration with VPNMON-R2, and all references to it in the code. As VPNMON-R2 has been sunset,
